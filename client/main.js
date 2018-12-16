@@ -1,9 +1,10 @@
-const API_URL = 'https://coding-garden-videos.now.sh/videos';
+const API_URL = 'https://server-kgkgadttoo.now.sh/videos';
 const loadingElement = document.querySelector('#loading');
 const videosElement = document.querySelector('#videos');
 const filterInput = document.querySelector('#filter');
 
 let allVideos = localStorage.videos ? JSON.parse(localStorage.videos) : [];
+console.log(allVideos);
 let videoElementsById = {};
 
 filterInput.addEventListener('keyup', filterList);
@@ -16,7 +17,7 @@ function showVideos(videos) {
   localStorage.videos = JSON.stringify(videos);
   allVideos = videos;
   loadingElement.style.display = 'none';
-
+console.log(videos);
   videos.forEach((video) => {
     const colDiv = document.createElement('div');
     colDiv.className = 'col-xs-1 col-sm-6 col-md-4 video';
