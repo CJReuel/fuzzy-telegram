@@ -3,41 +3,229 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Coding Garden Videos</title>
+  <title>Onboarding YouTube Project</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="youtube.css" rel="stylesheet">
   <link rel="stylesheet" href="https://bootswatch.com/4/cyborg/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
   <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
 </head>
-<body>
-  <main class="container">
-    <h1 class="title">Coding Garden Videos</h1>
-    <form>
-      <div class="form-group">
-        <label for="filter">Search</label>
-        <input type="text" class="form-control" id="filter">
+  <body>
+    <h1>Onboarding YouTube SPA</h1>
+
+    <div class="wrapper">
+
+      <div class="controls">
+        <form>
+          <p>
+            <label for="search">Enter a search term (required): </label>
+            <input type="text" id="search" class="search" required>
+          </p>
+          <p>
+            <button class="submit">Submit search</button>
+          </p>
+        </form>
       </div>
-    </form>
-    <form>
-    <div class="form-group row">
-    <div class="form-group">
-      <label for="exampleSelect1">Sort By</label>
-      <select class="form-control" id="exampleSelect1">
-        <option>Relevance</option>
-        <option>Date</option>
-        <option>Rating</option>
-      </select>
-    </div>
-    </div>
-    </form>
-    <div id="loading">
+      
+      <div id="loading">
       <h3>Loading...</h3>
       <video src="https://cdn.flixel.com/flixel/vg5u60m126u7qydd3e9i.phone.mp4" loop autoplay></video>
     </div>
     <section class="row" id="videos">
-
     </section>
-  </main>
-  <script src="main.js"></script>
-</body>
+
+      <div class="results">
+        <section>
+        </section>
+      </div>
+
+    </div>
+
+    <!--
+      Apply both necessary API scripts to your HTML. The first is for the YouTube Data
+      API, and the second is for the YouTube Iframe Player API
+    -->
+    <script src="https://apis.google.com/js/client.js" type="text/javascript"></script>
+    <script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+
+    <script>
+      // Get references to DOM elements we need to manipulate
+      const searchTerm = document.querySelector('.search');
+      const searchForm = document.querySelector('form');
+      const submitBtn = document.querySelector('.submit');
+      const loadingElement = document.querySelector('#loading');
+      const videosElement = document.querySelector('#videos');
+      const section = document.querySelector('section');
+
+      let videoElementsById = {};
+
+      // When the window (tab) has finished loading, run onClientLoad() to get
+      // It all started
+      window.onload = onClientLoad;
+
+      // Load and inialize the API, then run the onYouTubeApiLoad() function once this is done
+      function onClientLoad() {
+        gapi.client.load('youtube', 'v3', onYouTubeApiLoad);
+      }
+
+      // Attach your key to the API
+      function onYouTubeApiLoad() {
+        // To get a key for your own application:
+        // 1. Go to https://console.cloud.google.com/apis/dashboard
+        // 2. Create a new project if you've not already got one
+        // 3. Click the Enable API button
+        // 4. Choose YouTube Data API
+        // 5. Click the Enable button
+        // 6. Click create credentials
+        // 7. Select "Web browser (JavaScript)" from the second dropdown
+        // 8. Click the "Public data" radio button
+        // 9. Click the "What credentials do I need?" button
+        // 10. Copy your API key and paste it in below
+        gapi.client.setApiKey('AIzaSyB6B_1tjwrSuM_NYS2HbqINbaapkEi2ThA');
+
+        // Attach an event listener to the form so that a search is carried out
+        // when it is submitted — the search() function
+        searchForm.addEventListener('submit', search);
+      }
+
+      function search(e) {
+        // use preventDefault() to stop form actually submitting
+        e.preventDefault();
+
+        // create a search request using the Data API;
+        var request = gapi.client.youtube.search.list({
+          // set what kind of data the response will include
+          part: 'snippet',
+          // set the number of results that will be returned
+          maxResults: 10,
+          // set the search query to search for
+          q: searchTerm.value
+        });
+
+        // send the request, and specify a function to run when the response returns
+        request.execute(onSearchResponse);
+      }
+
+      // This function automatically has the response passed in as a parameter
+      function onSearchResponse(response) {
+        // Empty the <section> element
+        while (section.firstChild) {
+            section.removeChild(section.firstChild);
+        }
+
+        // Store the actual results of the search in a variable
+        let results = response.items;
+        //let results = JSON.parse(response.items);
+        console.log (results);
+        showVideos(results);
+        // // loop through the results and run displayVideo() on each
+        // // results.forEach(function(result){
+        // //   displayVideo();
+        // //   });
+        // for(var i = 0; i < results.length; i++) {
+        //   displayVideo(results[i], i);
+        // }
+      }
+
+  function showVideos(videos) {
+  localStorage.videos = JSON.stringify(videos);
+  allVideos = videos;
+  console.log(videos);
+  loadingElement.style.display = 'none';
+
+  videos.forEach((video) => {
+    const colDiv = document.createElement('div');
+    colDiv.className = 'col-xs-1 col-sm-6 col-md-4 video';
+    videoElementsById[video.id] = colDiv;
+
+    const link = document.createElement('a');
+    link.setAttribute('target', '_blank');
+    link.href = `https://www.youtube.com/watch?v=${video.id.videoId}`;
+
+    const videoElement = document.createElement('div');
+    videoElement.className = 'card ma-1';
+
+    const img = document.createElement('img');
+
+    const imageRes = video.snippet.thumbnails.standard || video.snippet.thumbnails.medium || video.snippet.thumbnails.high;
+
+    img.src = imageRes.url;
+    img.className = 'card-img-top';
+
+    videoElement.appendChild(img);
+
+    const mediaBody = document.createElement('div');
+    mediaBody.className = 'card-body';
+
+    videoElement.appendChild(mediaBody);
+
+    const h5 = document.createElement('h5');
+    h5.className = 'card-title';
+    h5.textContent = video.snippet.title;
+    //mediaBody.appendChild(h5);
+
+    const datetime = document.createElement('P');
+    datetime.className = 'card-text';
+    datetime.textContent = video.snippet.publishedAt;
+    
+    const datetime2 = document.createElement('P');
+    datetime2.className = 'card-text';
+    datetime2.textContent = video.snippet.publishedAt;
+    
+    mediaBody.appendChild(datetime2);
+    mediaBody.appendChild(datetime);
+    mediaBody.appendChild(h5);
+
+    link.appendChild(videoElement);
+    colDiv.appendChild(link);
+    videosElement.appendChild(colDiv);
+  });
+}
+
+//     link.appendChild(videoElement);
+//     colDiv.appendChild(link);
+//     videosElement.appendChild(colDiv);
+//   });
+// }
+
+
+      // function displayVideo(result, i) {
+      //   // Create a div with a unique ID for each video, and append it to the <section>
+      //   // The YouTube Iframe Player API will replace each one with
+      //   // an <iframe> containing the corresponding video
+      //   var vid = document.createElement('div');
+      //   vidId = 'vid' + i;
+      //   vid.id = vidId;
+      //   section.appendChild(vid);
+
+      //   // Use the YT.Player() constructor to create a new video player object,
+      //   // Specifying the ID of the element to be replaced by it (the <div>),
+      //   // A height and width, and an event handler to handle the custom onReady event
+      //   var player = new YT.Player(vidId, {
+      //     height: '360',
+      //     width: '480',
+      //     videoId: result.id.videoId,
+      //     events: {
+      //       'onReady': onPlayerReady
+      //     }
+      //   });
+
+      //   // The onPlayerReady() handler grabs the ID of each video, and checks its duration
+      //   // If the duration is 0, the video can't be played, so we just delete it
+      //   function onPlayerReady(e) {
+      //     var myId = e.target.a.id;
+      //     var duration = e.target.getDuration();
+      //     if(duration === 0) {
+      //       console.log('Video ' + myId + ' cannot be played, so it was deleted.');
+      //       section.removeChild(e.target.a);
+      //     } else {
+      //       var myId = e.target.a.id;
+      //       console.log('Video ' + myId + ' ready to play.');
+      //     }
+      //   }
+      // }
+    </script>
+
+
+  </body>
 </html>
