@@ -10,12 +10,57 @@
   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
   <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
 </head>
-  
+
+<!-- <div id="rates">
+  <input type="radio" id="r1" name="rate" value="Fixed Rate"> Fixed Rate
+  <input type="radio" id="r2" name="rate" value="Variable Rate"> Variable Rate
+  <input type="radio" id="r3" name="rate" value="Multi Rate" checked="checked"> Multi Rate  
+</div> -->
+
+</form>  
   <body>
     <h1>Onboarding YouTube SPA</h1>
     <div class="wrapper">
       <div class="controls">
         <form>
+
+          <fieldset class="form-group">
+                    <legend>Order Search Results by:</legend>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="relevance" value="relevance" >
+                        Relevance
+                      </label>
+                    </div>
+                    <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="date" value="date" checked>
+                        Date
+                      </label>
+                    </div>
+                    <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="rating" value="rating">
+                        Rating
+                      </label>
+                    </div>
+                  </fieldset>
+
+          <!-- <h3>sort by:</h3>
+          <div class="bs-component" style="margin-bottom: 15px;">
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                  <input type="radio" name="options" id="option1" autocomplete="off" checked> Active
+                </label>
+                <label class="btn btn-primary">
+                  <input type="radio" name="options" id="option2" autocomplete="off"> Radio
+                </label>
+                <label class="btn btn-primary">
+                  <input type="radio" name="options" id="option3" autocomplete="off"> Radio
+                </label>
+              </div>
+            </div> -->
+
           <p>
             <label for="search">Enter a search term (required): </label>
             <input type="text" id="search" class="search" required>
@@ -79,13 +124,64 @@
         searchForm.addEventListener('submit', search);
       }
 
+
+// // to remove from global namespace
+// (function() {
+    
+//     // onclick vs. onchange
+//     var trans = document.forms['transForm'].elements['trans'];
+
+//     for (var i=0, len=trans.length; i<len; i++) {
+//         trans[i].onclick = function() {
+//             document.getElementById('display1').innerHTML += '<br />' + this.value  + ' clicked';
+//         };
+            
+//         trans[i].onchange = function() {
+//             document.getElementById('display1').innerHTML += '<br />' + this.value  + ' changed';
+//         };
+//     }
+    
+//     // disable submission of all forms on this page
+//     for (var i=0, len=document.forms.length; i<len; i++) {
+//         document.forms[i].onsubmit = function() { return false; };
+//     }    
+    
+// }());
+
+// let buttons = document.querySelectorAll("[name=color]");
+// for (let button of Array.from(buttons)) {
+// button.addEventListener("change", () => {
+// document.body.style.background = button.value;
+// });
+// }
+
+
+//       let searchOrder = document.querySelector('input[name="optionsRadios"]');
+//       for(let i=0, len=searchOrder.length; i<len; i++){
+//         searchOrder[i].onclick = function(e) {
+//         if(e.ctrlKey) {
+//             this.checked = true;
+//         }
+//     }
+// }
+
+      // let buttons = document.querySelectorAll("[name=optionsRadios]");
+      // for (let button of Array.from(buttons)) {
+      //   button.addEventListener("change", () => {
+      //   checked = true;
+      //   });
+      // }
+
+      
+      //console.log(order);
       function search(e) {
         e.preventDefault();
+        let order= document.querySelector('input[name="optionsRadios"]:checked').value;
         let request = gapi.client.youtube.search.list({
           part: 'snippet',
           maxResults: 10,
           q: searchTerm.value,
-          order: 'relevance'
+          order: order
         });
         console.log(request);
         request.execute(onSearchResponse);
