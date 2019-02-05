@@ -20,63 +20,63 @@
         <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
         <small>Donec id elit non mi porta.</small>
       </a>
-  </div>
-  <h1>Onboarding YouTube SPA</h1>
-  <div class="wrapper">
-    <div class="controls">
-      <form>
-        <fieldset class="form-group">
-          <legend>Order Search Results by:</legend>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" name="optionsRadios" id="relevance" value="relevance" >
-              Relevance
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" name="optionsRadios" id="date" value="date">
-              Date
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" name="optionsRadios" id="rating" value="rating" checked>
-              Rating
-            </label>
-          </div>
-        </fieldset>
-        <p>
-          <label for="search">Enter a search term (required): </label>
-          <input type="text" id="search" class="search" required>
-        </p>
-        <p>
-          <button class="submit">Submit search</button>
-        </p>
-      </form>
     </div>
+    <h1>Onboarding YouTube SPA</h1>
+    <div class="wrapper">
+      <div class="controls">
+        <form>
+          <fieldset class="form-group">
+            <legend>Order Search Results by:</legend>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="optionsRadios" id="relevance" value="relevance" >
+                Relevance
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="optionsRadios" id="date" value="date">
+                Date
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="optionsRadios" id="rating" value="rating" checked>
+                Rating
+              </label>
+            </div>
+          </fieldset>
+          <p>
+            <label for="search">Enter a search term (required): </label>
+            <input type="text" id="search" class="search" required>
+          </p>
+          <p>
+            <button class="submit">Submit search</button>
+          </p>
+        </form>
+      </div>
 
-    <div id="loading">
-      <h3>Loading...</h3>
-      <video src="https://cdn.flixel.com/flixel/7a0iejyutuuc9p8rdss3.phone.mp4" loop autoplay></video>
-    </div>
+      <div id="loading">
+        <h3>Loading...</h3>
+        <video src="https://cdn.flixel.com/flixel/7a0iejyutuuc9p8rdss3.phone.mp4" loop autoplay></video>
+      </div>
 
-    <section class="row" id="videos">
-    </section>
-
-    <div>
-      <section>
+      <section class="row" id="videos">
       </section>
+
+      <div>
+        <section>
+        </section>
+      </div>
+
     </div>
 
-  </div>
+    <script src="https://apis.google.com/js/client.js" type="text/javascript"></script>
+    <script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+    <script type='text/javascript' src='config.js'></script>
 
-  <script src="https://apis.google.com/js/client.js" type="text/javascript"></script>
-   <script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
-  <script type='text/javascript' src='config.js'></script>
-
-  <script>
-    const myKey = config.YOUTUBE_API_KEY;
+    <script>
+      const myKey = config.YOUTUBE_API_KEY;
       // Get references to DOM elements we need to manipulate
       const searchTerm = document.querySelector('.search');
       const searchForm = document.querySelector('form');
@@ -85,6 +85,7 @@
       const videosElement = document.querySelector('#videos');
       const section = document.querySelector('section');
       let favVideos = JSON.parse(localStorage.getItem("favs") || "[]");
+      //let favs = JSON.parse(localStorage.getItem('favs'));
 
       let videoElementsById = {};
       window.onload = onClientLoad;
@@ -123,10 +124,7 @@
       }
       function showVideos(videos) {
         localStorage.videos = JSON.stringify(videos);
-        console.log(videos);
         loadingElement.style.display = 'none';
-let favVideos = JSON.parse(localStorage.getItem("favs") || "[]");
-         console.log(favVideos);
 
         videos.forEach((video) => {
           const idVideo = video.id.videoId;
@@ -158,59 +156,39 @@ let favVideos = JSON.parse(localStorage.getItem("favs") || "[]");
           channelTitle.className = 'card-text';
           channelTitle.textContent = video.snippet.channelTitle; 
 
-  const favButton = document.createElement('button');
-  favButton.id = video.id.videoId;
-  const videoIdentifier = favButton.id
-  favButton.className = 'btn btn-outline-primary';
-  favButton.textContent = 'Add to Favorites';
+          const favButton = document.createElement('button');
+          favButton.id = idVideo;
+          favButton.className = 'btn btn-outline-primary';
+          favButton.textContent = 'Add to Favorites';
 
-  const removeBut = document.createElement('button');
-  removeBut.id = video.id.videoId;
-  const videoIdentifierR = removeBut.id
-  removeBut.className = 'btn btn-outline-primary';
-  removeBut.textContent = 'Remove from Favorites';
-  
-  removeBut.style.display = 'none';
+          const removeBut = document.createElement('button');
+          removeBut.id = idVideo;
+          removeBut.className = 'btn btn-outline-primary';
+          removeBut.textContent = 'Remove from Favorites';
+          removeBut.style.display = 'none';
 
-  removeBut.addEventListener("click", function(){
-                console.log(video);
-                favVideos.splice( favVideos.indexOf(video), 1 );
-                console.log(favVideos);
-                localStorage.setItem('favs', JSON.stringify(favVideos));
-                removeBut.style.display = 'none';
-                favButton.style.display = 'unset';
-              });
+          removeBut.addEventListener("click", function(){
+            favVideos.splice( favVideos.indexOf(video), 1 );
+            localStorage.setItem('favs', JSON.stringify(favVideos));
+            removeBut.style.display = 'none';
+            favButton.style.display = 'unset';
+          });
 
-   favButton.addEventListener("click", function(){
-     favVideos.push(video);
-     console.log(favVideos);
-     localStorage.setItem('favs', JSON.stringify(favVideos));
-     let favs = JSON.parse(localStorage.getItem('favs'));
-     document.getElementById("test").innerHTML = favs;
-     removeBut.style.display = 'unset';
-     favButton.style.display = 'none';
-     // favButton.textContent = 'Remove from Favorites';
-     });
+          favButton.addEventListener("click", function(){
+           favVideos.push(video);
+           localStorage.setItem('favs', JSON.stringify(favVideos));
+           document.getElementById("test").innerHTML = favVideos;
+           removeBut.style.display = 'unset';
+           favButton.style.display = 'none';
+          });
 
-     favVideos.forEach((favorite)=> {
-      if(favorite.id.videoId === videoIdentifierR || favorite.id.videoId === videoIdentifier){
-        removeBut.style.display = 'unset';
-        favButton.style.display = 'none';
-          // removeBut.addEventListener("click", function(){
-          // console.log(video);
-          // favVideos.splice( favVideos.indexOf(favorite), 1 );
-          // console.log(favVideos);
-          // localStorage.setItem('favs', JSON.stringify(favVideos));
-          // removeBut.style.display = 'none';
-          // favButton.style.display = 'unset';
-          // });
-      }
-      
-      });
-   
+          favVideos.forEach((favorite)=> {
+            if(favorite.id.videoId === idVideo){
+              removeBut.style.display = 'unset';
+              favButton.style.display = 'none';
+            }
+          });
 
-  
- 
           link.appendChild(h5);
           mediaBody.appendChild(favButton);
           mediaBody.appendChild(removeBut);
@@ -219,33 +197,30 @@ let favVideos = JSON.parse(localStorage.getItem("favs") || "[]");
           colDiv.appendChild(videoElement);
           videosElement.appendChild(colDiv);
 
-//------------
-var vid = document.createElement('div');
-vidId = 'vid' + video.id.videoId;
-vid.id = vidId;
-mediaBody.appendChild(vid);
-var player = new YT.Player(vidId, {
-  height: '200 %',
-  width: '200 %',
-  videoId: video.id.videoId,
-  events: {
-    'onReady': onPlayerReady
-  }
-});
+          var vid = document.createElement('div');
+          vidId = 'vid' + video.id.videoId;
+          vid.id = vidId;
+          mediaBody.appendChild(vid);
+          var player = new YT.Player(vidId, {
+            height: '200 %',
+            width: '200 %',
+            videoId: video.id.videoId,
+            events: {
+              'onReady': onPlayerReady
+            }
+          });
 
-function onPlayerReady(e) {
-  var myId = e.target.a.id;
-  var duration = e.target.getDuration();
-  if(duration === 0) {
-    console.log('Video ' + myId + ' cannot be played, so it was deleted.');
-    section.removeChild(e.target.a);
-  } else {
-    var myId = e.target.a.id;
-    console.log('Video ' + myId + ' ready to play.');
-  }
-}
-
-//------------------
+          function onPlayerReady(e) {
+            var myId = e.target.a.id;
+            var duration = e.target.getDuration();
+            if(duration === 0) {
+              console.log('Video ' + myId + ' cannot be played, so it was deleted.');
+              section.removeChild(e.target.a);
+            } else {
+              var myId = e.target.a.id;
+              console.log('Video ' + myId + ' ready to play.');
+            }
+          }
 
           const videoDetailsURL = fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${video.id.videoId}&key=` + myKey)
           .then(response => response.json())
@@ -263,9 +238,9 @@ function onPlayerReady(e) {
             mediaBody.appendChild(videoMetadata); 
           }
         });
-      }
-    </script>
+}
+</script>
 
 
-  </body>
-  </html>
+</body>
+</html>
