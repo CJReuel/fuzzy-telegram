@@ -84,6 +84,7 @@
       const loadingElement = document.querySelector('#loading');
       const videosElement = document.querySelector('#videos');
       const section = document.querySelector('section');
+      let favVideos = JSON.parse(localStorage.getItem("favs") || "[]");
 
       let videoElementsById = {};
       window.onload = onClientLoad;
@@ -171,8 +172,16 @@ let favVideos = JSON.parse(localStorage.getItem("favs") || "[]");
   
   removeBut.style.display = 'none';
 
+  removeBut.addEventListener("click", function(){
+                console.log(video);
+                favVideos.splice( favVideos.indexOf(video), 1 );
+                console.log(favVideos);
+                localStorage.setItem('favs', JSON.stringify(favVideos));
+                removeBut.style.display = 'none';
+                favButton.style.display = 'unset';
+              });
+
    favButton.addEventListener("click", function(){
-     document.getElementById("test").innerHTML = "Hello World!"+video;
      favVideos.push(video);
      console.log(favVideos);
      localStorage.setItem('favs', JSON.stringify(favVideos));
@@ -187,17 +196,17 @@ let favVideos = JSON.parse(localStorage.getItem("favs") || "[]");
       if(favorite.id.videoId === videoIdentifierR || favorite.id.videoId === videoIdentifier){
         removeBut.style.display = 'unset';
         favButton.style.display = 'none';
-          removeBut.addEventListener("click", function(){
-          console.log(video);
-          favVideos.splice( favVideos.indexOf(favorite), 1 );
-          console.log(favVideos);
-          localStorage.setItem('favs', JSON.stringify(favVideos));
-          removeBut.style.display = 'none';
-          favButton.style.display = 'unset';
-          });
+          // removeBut.addEventListener("click", function(){
+          // console.log(video);
+          // favVideos.splice( favVideos.indexOf(favorite), 1 );
+          // console.log(favVideos);
+          // localStorage.setItem('favs', JSON.stringify(favVideos));
+          // removeBut.style.display = 'none';
+          // favButton.style.display = 'unset';
+          // });
       }
-
-     });
+      
+      });
    
 
   
